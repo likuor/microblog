@@ -4,8 +4,19 @@ import styles from '../styles/Home.module.css';
 import Link from 'next/link';
 import Layout from '../components/Layout';
 import utilStyles from '../styles/utils.module.css';
+import { getPostsData } from '../lib/post';
 
-export default function Home() {
+export async function getStaticProps() {
+  const allPostsData = getPostsData();
+
+  return {
+    props: {
+      allPostsData,
+    },
+  };
+}
+
+export default function Home({ allPostsData }) {
   return (
     <Layout>
       <section>
@@ -14,70 +25,24 @@ export default function Home() {
       <section>
         <h2>✍ Blog by an enginner</h2>
         <div className={styles.grid}>
-          <article>
-            <Link href='/'>
-              <img
-                src='/images/thumbnail01.jpg'
-                alt=''
-                className={styles.thumbnailImage}
-              />
-            </Link>
-            <Link href='/'>
-              <a href='' className={utilStyles.boldText}>
-                Title is here
-              </a>
-            </Link>
-            <br />
-            <small className={utilStyles.lightText}>October 6,2022</small>
-          </article>
-          <article>
-            <Link href='/'>
-              <img
-                src='/images/thumbnail01.jpg'
-                alt=''
-                className={styles.thumbnailImage}
-              />
-            </Link>
-            <Link href='/'>
-              <a href='' className={utilStyles.boldText}>
-                Title is here
-              </a>
-            </Link>
-            <br />
-            <small className={utilStyles.lightText}>October 6,2022</small>
-          </article>
-          <article>
-            <Link href='/'>
-              <img
-                src='/images/thumbnail01.jpg'
-                alt=''
-                className={styles.thumbnailImage}
-              />
-            </Link>
-            <Link href='/'>
-              <a href='' className={utilStyles.boldText}>
-                Title is here
-              </a>
-            </Link>
-            <br />
-            <small className={utilStyles.lightText}>October 6,2022</small>
-          </article>
-          <article>
-            <Link href='/'>
-              <img
-                src='/images/thumbnail01.jpg'
-                alt=''
-                className={styles.thumbnailImage}
-              />
-            </Link>
-            <Link href='/'>
-              <a href='' className={utilStyles.boldText}>
-                Title is here
-              </a>
-            </Link>
-            <br />
-            <small className={utilStyles.lightText}>October 6,2022</small>
-          </article>
+          {allPostsData.map(({ id, title, date, thumbnail }) => (
+            <article key={id}>
+              <Link href={`posts/${id}`}>
+                <img
+                  src={`${thumbnail}`}
+                  alt={`${id}`}
+                  className={styles.thumbnailImage}
+                />
+              </Link>
+              <Link href={`/posts/${id}`}>
+                <a href='' className={utilStyles.boldText}>
+                  {title}
+                </a>
+              </Link>
+              <br />
+              <small className={utilStyles.lightText}>{date}</small>
+            </article>
+          ))}
         </div>
       </section>
     </Layout>
